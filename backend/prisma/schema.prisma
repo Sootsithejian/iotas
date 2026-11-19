@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum EstadoReservacion {
+  activa
+  cumplida
+  cancelada
+}
+
+model Lugar {
+  id            Int               @id
+  nivel         Int               @default(1)
+  numero        Int               @default(1)
+  ocupado       Boolean           @default(false)
+  ultimaLectura DateTime?         @map("ultima_lectura")
+  reservaciones Reservacion[]
+  dispositivo   DispositivoSensor?
+
+  @@map("lugares")
+}
+
+model Reservacion {
+  id        Int               @id @default(autoincrement())
+  lugarId   Int               @map("lugar_id")
+  clienteId String            @map("cliente_id") @db.VarChar(64)
+  estado    EstadoReservacion @default(activa)
+  creadaEn  DateTime          @default(now()) @map("creada_en")
+  expiraEn  DateTime          @map("expira_en")
+  lugar     Lugar             @relation(fields: [lugarId], references: [id])
+
+  @@map("reservaciones")
+}
+
+model DispositivoSensor {
+  id      Int     @id @default(autoincrement())
+  mac     String  @unique @db.VarChar(17)
+  activo  Boolean @default(true)
+  lugarId Int     @unique @map("lugar_id")
+  lugar   Lugar   @relation(fields: [lugarId], references: [id])
+
+  @@map("dispositivos_sensores")
+}

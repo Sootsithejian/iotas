@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estacionamiento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --asfalto: #15181c;
+      --carril: #232830;
+      --linea: #e8e6df;
+      --texto: #f2f1ec;
+      --suave: #9aa1ab;
+      --libre: #3fb27f;
+      --ocupado: #d9534f;
+      --reservado: #e0a030;
+      --guia: #4cc9f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--asfalto); color: var(--texto);
+      font-family: "Barlow", system-ui, sans-serif;
+    }
+    h1, h2, .piso-num { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .01em; }
+    main { max-width: 760px; margin: 0 auto; padding: 28px 20px 48px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    h1 { font-size: 40px; margin: 0; line-height: 1; }
+    #conexion { font-size: 13px; color: var(--suave); display: flex; align-items: center; gap: 6px; }
+    #conexion i { width: 8px; height: 8px; border-radius: 50%; background: var(--ocupado); display: inline-block; }
+    #conexion.on i { background: var(--libre); }
+    .sub { color: var(--suave); margin: 8px 0 28px; font-size: 17px; }
+    .oculto { display: none !important; }
+
+    /* ---------- Inicio: elegir piso ---------- */
+    #pisos { display: grid; gap: 14px; }
+    .piso {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px;
+      background: var(--carril); border: 2px solid transparent; border-radius: 14px;
+      padding: 18px 20px; color: inherit; font: inherit; text-align: left; cursor: pointer; width: 100%;
+    }
+    .piso:hover { border-color: #3a424d; }
+    .piso:focus-visible, button:focus-visible, .lugar:focus-visible { outline: 3px solid var(--guia); outline-offset: 3px; }
+    .piso.recomendado { border-color: var(--guia); }
+    .piso-num { font-size: 56px; line-height: 1; min-width: 52px; text-align: center; }
+    .piso-info strong { font-size: 20px; display: block; }
+    .piso-info span { color: var(--suave); font-size: 15px; }
+    .puntos { display: flex; gap: 6px; margin-top: 10px; }
+    .puntos b { width: 22px; height: 10px; border-radius: 3px; background: var(--ocupado); }
+    .puntos b.libre { background: var(--libre); }
+    .puntos b.reservado { background: var(--reservado); }
+    .flecha-piso { display: flex; flex-direction: column; align-items: center; color: var(--guia); font-size: 13px; font-weight: 600; gap: 2px; }
+    .flecha-piso svg { width: 34px; height: 34px; animation: sube 1.2s ease-in-out infinite; }
+    @keyframes sube { 0%,100% { transform: translateY(3px); } 50% { transform: translateY(-4px); } }
+    .llena { color: var(--ocupado); font-size: 14px; font-weight: 600; }
+
+    /* ---------- Vista de piso ---------- */
+    .barra { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .volver { background: var(--carril); color: var(--texto); border: 0; border-radius: 10px; padding: 10px 14px; font: inherit; font-weight: 600; cursor: pointer; }
+    h2 { font-size: 34px; margin: 0; }
+    #plano { width: 100%; height: auto; display: block; margin-top: 8px; }
+    .lugar { cursor: pointer; }
+    .lugar rect.base { fill: var(--carril); stroke: var(--linea); stroke-width: 3; }
+    .lugar.libre rect.base { fill: rgba(63,178,127,.18); stroke: var(--libre); }
+    .lugar.ocupado rect.base { fill: rgba(217,83,79,.2); stroke: var(--ocupado); cursor: not-allowed; }
+    .lugar.reservado rect.base { fill: rgba(224,160,48,.2); stroke: var(--reservado); cursor: not-allowed; }
+    .lugar.destino rect.base { stroke-width: 5; stroke: var(--guia); }
+    .lugar text { fill: var(--texto); font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-anchor: middle; }
+    .lugar .estado { font-family: "Barlow", sans-serif; font-weight: 500; font-size: 15px; fill: var(--suave); }
+    .ruta { fill: none; stroke: var(--guia); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 2 16; animation: fluye 1s linear infinite; }
+    @keyframes fluye { to { stroke-dashoffset: -18; } }
+    .carril-txt { fill: #3a424d; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 22px; text-anchor: middle; letter-spacing: .2em; }
+
+    .panel { background: var(--carril); border-radius: 14px; padding: 18px 20px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .panel p { margin: 0; font-size: 18px; }
+    .panel small { color: var(--suave); display: block; margin-top: 2px; font-size: 14px; }
+    .reservar { background: var(--guia); color: #06222b; border: 0; border-radius: 10px; padding: 12px 20px; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; }
+    .reservar:disabled { opacity: .5; cursor: default; }
+    .leyenda { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; color: var(--suave); font-size: 14px; }
+    .leyenda span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+    #aviso { margin-top: 14px; color: var(--reservado); font-weight: 600; min-height: 22px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ruta, .flecha-piso svg { animation: none; }
+      .moto { display: none; }
+    }
+    @media (max-width: 520px) {
+      h1 { font-size: 32px; }
+      .piso { grid-template-columns: auto 1fr; }
+      .flecha-piso { grid-column: 1 / -1; flex-direction: row; justify-content: center; }
+      .flecha-piso svg { width: 24px; height: 24px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Estacionamiento</h1>
+    <div id="conexion"><i></i><span>Conectando…</span></div>
+  </header>
+
+  <!-- Pantalla 1: elegir piso -->
+  <section id="inicio">
+    <p class="sub">Elige un piso para ver los lugares disponibles.</p>
+    <div id="pisos"></div>
+  </section>
+
+  <!-- Pantalla 2: plano del piso -->
+  <section id="vistaPiso" class="oculto">
+    <div class="barra">
+      <button class="volver" id="volver">← Pisos</button>
+      <h2 id="tituloPiso"></h2>
+    </div>
+    <svg id="plano" viewBox="0 0 600 400" role="img" aria-label="Plano del piso"></svg>
+    <div class="panel">
+      <div>
+        <p id="textoDestino"></p>
+        <small>Toca otro lugar libre para cambiar el destino.</small>
+      </div>
+      <button class="reservar" id="reservar">Reservar este lugar</button>
+    </div>
+    <div id="aviso" role="status"></div>
+    <div class="leyenda">
+      <span style="--c:var(--libre)">Libre</span>
+      <span style="--c:var(--ocupado)">Ocupado</span>
+      <span style="--c:var(--reservado)">Reservado</span>
+      <span style="--c:var(--guia)">Tu ruta</span>
+    </div>
+  </section>
+</main>
+
+<script>
+  let lugares = [];
+  let pisoActual = null;   // número de piso abierto, o null si estás en el inicio
+  let destinoId = null;    // lugar al que apunta la flecha
+
+  const $ = (id) => document.getElementById(id);
+  const estadoDe = (l) => (l.ocupado ? "ocupado" : l.reservado ? "reservado" : "libre");
+
+  function pisosDisponibles() {
+    return [...new Set(lugares.map((l) => l.nivel))].sort((a, b) => a - b);
+  }
+  function lugaresDe(piso) {
+    return lugares.filter((l) => l.nivel === piso).sort((a, b) => a.numero - b.numero);
+  }
+
+  /* ---------- Pantalla 1 ---------- */
+  function pintarInicio() {
+    const pisos = pisosDisponibles();
+    const datos = pisos.map((p) => ({ piso: p, libres: lugaresDe(p).filter((l) => estadoDe(l) === "libre").length }));
+    const mejor = datos.reduce((a, b) => (b.libres > (a?.libres ?? 0) ? b : a), null);
+
+    $("pisos").innerHTML = datos.map(({ piso, libres }) => {
+      const ls = lugaresDe(piso);
+      const recomendado = mejor && mejor.piso === piso && libres > 0;
+      const info = libres === 0
+        ? `<span class="llena">Piso lleno</span>`
+        : `<span>${libres} de ${ls.length} libres</span>`;
+      const flecha = recomendado
+        ? `<div class="flecha-piso" aria-hidden="true">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 12l7-7 7 7"/></svg>
+             Más espacio
+           </div>` : "<div></div>";
+      return `
+        <button class="piso ${recomendado ? "recomendado" : ""}" data-piso="${piso}">
+          <div class="piso-num">${piso}</div>
+          <div class="piso-info">
+            <strong>Piso ${piso}</strong>${info}
+            <div class="puntos">${ls.map((l) => `<b class="${estadoDe(l)}"></b>`).join("")}</div>
+          </div>
+          ${flecha}
+        </button>`;
+    }).join("");
+
+    document.querySelectorAll(".piso").forEach((b) => (b.onclick = () => abrirPiso(Number(b.dataset.piso))));
+  }
+
+  /* ---------- Pantalla 2 ---------- */
+  function abrirPiso(piso) {
+    pisoActual = piso;
+    destinoId = null;
+    $("aviso").textContent = "";
+    $("inicio").classList.add("oculto");
+    $("vistaPiso").classList.remove("oculto");
+    pintarPiso();
+  }
+  function volver() {
+    pisoActual = null;
+    $("vistaPiso").classList.add("oculto");
+    $("inicio").classList.remove("oculto");
+    pintarInicio();
+  }
+
+  // Geometría del plano
+  const W = 150, H = 150, GAP = 15, X0 = 60, Y0 = 30;
+  const centroX = (i) => X0 + W / 2 + i * (W + GAP);
+  const CARRIL_Y = Y0 + H + 30;      // 210
+  const RUTA_Y = CARRIL_Y + 50;      // 260
+  const ENTRADA = { x: 300, y: 380 };
+
+  function pintarPiso() {
+    const ls = lugaresDe(pisoActual);
+    $("tituloPiso").textContent = `Piso ${pisoActual}`;
+
+    // Elegir destino: el que escogió el usuario si sigue libre, si no, el primer libre
+    const actual = ls.find((l) => l.id === destinoId && estadoDe(l) === "libre");
+    const destino = actual || ls.find((l) => estadoDe(l) === "libre") || null;
+    destinoId = destino ? destino.id : null;
+
+    let svg = `<rect x="20" y="10" width="560" height="${ENTRADA.y + 10}" rx="16" fill="none" stroke="#2b3138" stroke-width="2"/>`;
+    svg += `<rect x="40" y="${CARRIL_Y}" width="520" height="${ENTRADA.y - CARRIL_Y}" fill="var(--carril)" rx="10"/>`;
+    svg += `<text class="carril-txt" x="300" y="${CARRIL_Y + 30}" opacity=".9">CARRIL</text>`;
+
+    ls.forEach((l, i) => {
+      const x = X0 + i * (W + GAP);
+      const est = estadoDe(l);
+      const texto = est === "libre" ? "Libre" : est === "ocupado" ? "Ocupado" : "Reservado";
+      svg += `
+        <g class="lugar ${est} ${l.id === destinoId ? "destino" : ""}" data-id="${l.id}" tabindex="${est === "libre" ? 0 : -1}" role="button" aria-label="Lugar ${l.numero}, ${texto}">
+          <rect class="base" x="${x}" y="${Y0}" width="${W}" height="${H}" rx="10"/>
+          <text x="${x + W / 2}" y="${Y0 + 55}" font-size="44">${l.numero}</text>
+          <text class="estado" x="${x + W / 2}" y="${Y0 + 84}">${texto}</text>
+          ${est === "ocupado" ? `<text x="${x + W / 2}" y="${Y0 + 130}" font-size="34">🚗</text>` : ""}
+        </g>`;
+    });
+
+    // Entrada
+    svg += `<text class="carril-txt" x="${ENTRADA.x}" y="${ENTRADA.y + 2}" style="fill:#6b7480;font-size:18px">ENTRADA</text>`;
+
+    // Flecha guía
+    if (destino) {
+      const i = ls.findIndex((l) => l.id === destino.id);
+      const cx = centroX(i);
+      const d = cx === ENTRADA.x
+        ? `M${ENTRADA.x},${ENTRADA.y - 22} L${cx},${Y0 + H - 25}`
+        : `M${ENTRADA.x},${ENTRADA.y - 22} L${ENTRADA.x},${RUTA_Y} L${cx},${RUTA_Y} L${cx},${Y0 + H - 25}`;
+      svg += `<path id="ruta" class="ruta" d="${d}"/>`;
+      svg += `<g class="moto"><polygon points="-14,-13 16,0 -14,13 -6,0" fill="var(--guia)">
+                <animateMotion dur="3s" repeatCount="indefinite" rotate="auto"><mpath href="#ruta"/></animateMotion>
+              </polygon></g>`;
+    }
+
+    $("plano").innerHTML = svg;
+    $("plano").querySelectorAll(".lugar.libre").forEach((g) => {
+      const elegir = () => { destinoId = Number(g.dataset.id); pintarPiso(); };
+      g.onclick = elegir;
+      g.onkeydown = (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), elegir());
+    });
+
+    if (destino) {
+      $("textoDestino").textContent = `Sigue la flecha al lugar ${destino.numero}`;
+      $("reservar").disabled = false;
+      $("reservar").style.display = "";
+    } else {
+      $("textoDestino").textContent = "Este piso está lleno. Prueba en otro piso.";
+      $("reservar").style.display = "none";
+    }
+  }
+
+  async function reservar() {
+    if (!destinoId) return;
+    $("reservar").disabled = true;
+    try {
+      const res = await fetch("/reservaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lugarId: destinoId, clienteId: "cliente-demo" }),
+      });
+      const data = await res.json();
+      $("aviso").textContent = res.ok
+        ? "Lugar reservado por 15 minutos."
+        : data.error || "No se pudo reservar.";
+    } catch {
+      $("aviso").textContent = "No hay conexión con el servidor.";
+    }
+    $("reservar").disabled = false;
+  }
+
+  /* ---------- Render general + WebSocket ---------- */
+  function render() {
+    if (pisoActual === null) pintarInicio(); else pintarPiso();
+  }
+
+  function conectar() {
+    const ws = new WebSocket(`ws://${location.host}`);
+    ws.onopen = () => { $("conexion").classList.add("on"); $("conexion").lastChild.textContent = "En vivo"; };
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      if (msg.tipo === "lugares") { lugares = msg.lugares; render(); }
+    };
+    ws.onclose = () => {
+      $("conexion").classList.remove("on");
+      $("conexion").lastChild.textContent = "Reconectando…";
+      setTimeout(conectar, 2000);
+    };
+  }
+
+  $("volver").onclick = volver;
+  $("reservar").onclick = reservar;
+  conectar();
+</script>
+</body>
+</html>
