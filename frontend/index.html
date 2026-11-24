@@ -1,305 +1,337 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Estacionamiento</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --asfalto: #15181c;
-      --carril: #232830;
-      --linea: #e8e6df;
-      --texto: #f2f1ec;
-      --suave: #9aa1ab;
-      --libre: #3fb27f;
-      --ocupado: #d9534f;
-      --reservado: #e0a030;
-      --guia: #4cc9f0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh; background: var(--asfalto); color: var(--texto);
-      font-family: "Barlow", system-ui, sans-serif;
-    }
-    h1, h2, .piso-num { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .01em; }
-    main { max-width: 760px; margin: 0 auto; padding: 28px 20px 48px; }
-    header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    h1 { font-size: 40px; margin: 0; line-height: 1; }
-    #conexion { font-size: 13px; color: var(--suave); display: flex; align-items: center; gap: 6px; }
-    #conexion i { width: 8px; height: 8px; border-radius: 50%; background: var(--ocupado); display: inline-block; }
-    #conexion.on i { background: var(--libre); }
-    .sub { color: var(--suave); margin: 8px 0 28px; font-size: 17px; }
-    .oculto { display: none !important; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Plaza Central · Estacionamiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{--asfalto:#15181c;--carril:#232830;--carril2:#2b313a;--linea:#e8e6df;--texto:#f2f1ec;--suave:#9aa1ab;--libre:#3fb27f;--ocupado:#d9534f;--reservado:#e0a030;--guia:#4cc9f0}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--asfalto);color:var(--texto);font-family:"Barlow",system-ui,sans-serif}
+h1,h2,h3,.num{font-family:"Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.01em;margin:0}
+button{font:inherit;color:inherit}
+.oculto{display:none!important}
+:focus-visible{outline:3px solid var(--guia);outline-offset:3px}
+main{max-width:980px;margin:0 auto;padding:0 20px 56px}
 
-    /* ---------- Inicio: elegir piso ---------- */
-    #pisos { display: grid; gap: 14px; }
-    .piso {
-      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px;
-      background: var(--carril); border: 2px solid transparent; border-radius: 14px;
-      padding: 18px 20px; color: inherit; font: inherit; text-align: left; cursor: pointer; width: 100%;
-    }
-    .piso:hover { border-color: #3a424d; }
-    .piso:focus-visible, button:focus-visible, .lugar:focus-visible { outline: 3px solid var(--guia); outline-offset: 3px; }
-    .piso.recomendado { border-color: var(--guia); }
-    .piso-num { font-size: 56px; line-height: 1; min-width: 52px; text-align: center; }
-    .piso-info strong { font-size: 20px; display: block; }
-    .piso-info span { color: var(--suave); font-size: 15px; }
-    .puntos { display: flex; gap: 6px; margin-top: 10px; }
-    .puntos b { width: 22px; height: 10px; border-radius: 3px; background: var(--ocupado); }
-    .puntos b.libre { background: var(--libre); }
-    .puntos b.reservado { background: var(--reservado); }
-    .flecha-piso { display: flex; flex-direction: column; align-items: center; color: var(--guia); font-size: 13px; font-weight: 600; gap: 2px; }
-    .flecha-piso svg { width: 34px; height: 34px; animation: sube 1.2s ease-in-out infinite; }
-    @keyframes sube { 0%,100% { transform: translateY(3px); } 50% { transform: translateY(-4px); } }
-    .llena { color: var(--ocupado); font-size: 14px; font-weight: 600; }
+/* Portada */
+.portada{position:relative;margin:0 -20px;padding:28px 20px 0;background:linear-gradient(180deg,#1d2c3a 0%,#223a4c 55%,#15181c 100%);overflow:hidden}
+.portada .top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#b9c6d2}
+#conexion{display:flex;align-items:center;gap:6px}
+#conexion i{width:8px;height:8px;border-radius:50%;background:var(--ocupado)}
+#conexion.on i{background:var(--libre)}
+.portada h1{font-size:clamp(40px,8vw,64px);line-height:.95;margin-top:26px}
+.dir{color:#b9c6d2;margin:8px 0 0;font-size:16px}
+.skyline{display:block;width:100%;height:auto;margin-top:18px}
+.cuerpo{display:grid;grid-template-columns:1fr 300px;gap:28px;margin-top:26px;align-items:start}
+@media(max-width:860px){.cuerpo{grid-template-columns:1fr}}
 
-    /* ---------- Vista de piso ---------- */
-    .barra { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
-    .volver { background: var(--carril); color: var(--texto); border: 0; border-radius: 10px; padding: 10px 14px; font: inherit; font-weight: 600; cursor: pointer; }
-    h2 { font-size: 34px; margin: 0; }
-    #plano { width: 100%; height: auto; display: block; margin-top: 8px; }
-    .lugar { cursor: pointer; }
-    .lugar rect.base { fill: var(--carril); stroke: var(--linea); stroke-width: 3; }
-    .lugar.libre rect.base { fill: rgba(63,178,127,.18); stroke: var(--libre); }
-    .lugar.ocupado rect.base { fill: rgba(217,83,79,.2); stroke: var(--ocupado); cursor: not-allowed; }
-    .lugar.reservado rect.base { fill: rgba(224,160,48,.2); stroke: var(--reservado); cursor: not-allowed; }
-    .lugar.destino rect.base { stroke-width: 5; stroke: var(--guia); }
-    .lugar text { fill: var(--texto); font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-anchor: middle; }
-    .lugar .estado { font-family: "Barlow", sans-serif; font-weight: 500; font-size: 15px; fill: var(--suave); }
-    .ruta { fill: none; stroke: var(--guia); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 2 16; animation: fluye 1s linear infinite; }
-    @keyframes fluye { to { stroke-dashoffset: -18; } }
-    .carril-txt { fill: #3a424d; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 22px; text-anchor: middle; letter-spacing: .2em; }
+.datos{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 26px;padding:0;list-style:none}
+.datos li{background:var(--carril);border-radius:999px;padding:8px 14px;font-size:14px;display:flex;gap:8px;align-items:center}
+.datos svg{width:16px;height:16px;stroke:var(--guia);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+h2{font-size:32px;margin-bottom:4px}
+.sub{color:var(--suave);margin:0 0 18px}
 
-    .panel { background: var(--carril); border-radius: 14px; padding: 18px 20px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .panel p { margin: 0; font-size: 18px; }
-    .panel small { color: var(--suave); display: block; margin-top: 2px; font-size: 14px; }
-    .reservar { background: var(--guia); color: #06222b; border: 0; border-radius: 10px; padding: 12px 20px; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; }
-    .reservar:disabled { opacity: .5; cursor: default; }
-    .leyenda { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; color: var(--suave); font-size: 14px; }
-    .leyenda span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
-    #aviso { margin-top: 14px; color: var(--reservado); font-weight: 600; min-height: 22px; }
+/* Edificio */
+.edificio{display:grid;gap:6px}
+.losa{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:16px;background:var(--carril);border:0;border-bottom:6px solid #3a424d;border-radius:8px 8px 2px 2px;padding:14px 18px;text-align:left;cursor:pointer;width:100%;position:relative}
+.losa:hover{background:var(--carril2)}
+.losa.rec{box-shadow:inset 0 0 0 2px var(--guia)}
+.losa .num{font-size:46px;line-height:1;text-align:center}
+.losa strong{font-size:18px;display:block}
+.losa span{color:var(--suave);font-size:14px}
+.losa .llena{color:var(--ocupado);font-weight:600}
+.puntos{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.puntos b{width:18px;height:8px;border-radius:2px;background:var(--ocupado)}
+.puntos b.libre{background:var(--libre)}.puntos b.reservado{background:var(--reservado)}
+.insignia{color:var(--guia);font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.insignia svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.rampa{display:flex;align-items:center;gap:10px;color:var(--suave);font-size:14px;padding:10px 4px 0}
+.rampa svg{width:26px;height:26px;stroke:var(--suave);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-    @media (prefers-reduced-motion: reduce) {
-      .ruta, .flecha-piso svg { animation: none; }
-      .moto { display: none; }
-    }
-    @media (max-width: 520px) {
-      h1 { font-size: 32px; }
-      .piso { grid-template-columns: auto 1fr; }
-      .flecha-piso { grid-column: 1 / -1; flex-direction: row; justify-content: center; }
-      .flecha-piso svg { width: 24px; height: 24px; }
-    }
-  </style>
+/* Reserva (tarjeta lateral) */
+.reserva{background:var(--carril);border-radius:16px;padding:20px;position:sticky;top:16px}
+.reserva h3{font-size:26px}
+.fila{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #343b45;font-size:16px}
+.fila span:first-child{color:var(--suave)}
+.reservar{width:100%;margin-top:14px;background:var(--guia);color:#06222b;border:0;border-radius:12px;padding:14px;font-weight:700;font-size:17px;cursor:pointer}
+.reservar:disabled{opacity:.45;cursor:default}
+.nota{color:var(--suave);font-size:13px;margin:10px 0 0}
+#aviso{color:var(--reservado);font-weight:600;min-height:20px;margin-top:8px;font-size:14px}
+
+/* Plano */
+.barra{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.volver{background:var(--carril);border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+.escena{background:#0e1114;border-radius:16px;overflow:hidden}
+#plano{width:100%;height:auto;display:block;}
+.lugar{cursor:pointer}
+.lugar .base{fill:transparent}
+.lugar.libre .base{fill:rgba(63,178,127,.2)}
+.lugar.libre:hover .base{fill:rgba(63,178,127,.38)}
+.lugar.ocupado,.lugar.reservado{cursor:not-allowed}
+.lugar.reservado .base{fill:rgba(224,160,48,.16)}
+.lugar.destino .base{fill:rgba(76,201,240,.28);stroke:var(--guia);stroke-width:4}
+.suelo{fill:rgba(242,241,236,.9);font-family:"Barlow Condensed",sans-serif;font-weight:700;text-anchor:middle}
+.suelo.chico{opacity:.45}
+.est{fill:#7be0b0;font-family:"Barlow",sans-serif;font-weight:600;font-size:15px;text-anchor:middle}
+.rot{fill:#8a929c;font-family:"Barlow",sans-serif;font-size:12px;text-anchor:middle}
+.ruta{fill:none;stroke:var(--guia);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2 16;animation:fluye 1s linear infinite}
+@keyframes fluye{to{stroke-dashoffset:-18}}
+.leyenda{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--suave);font-size:14px}
+.leyenda span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+
+/* Boleto */
+.velo{position:fixed;inset:0;background:rgba(5,8,12,.78);display:grid;place-items:center;padding:20px;z-index:10}
+.boleto{background:#f2f1ec;color:#15181c;border-radius:18px;width:min(360px,100%);overflow:hidden}
+.boleto .cab{background:var(--libre);padding:18px 22px}
+.boleto .cab h3{font-size:30px;color:#06261a}
+.boleto .cab p{margin:2px 0 0;color:#0b3a28;font-size:15px}
+.boleto .med{padding:20px 22px;display:grid;gap:14px}
+.boleto .par{display:flex;justify-content:space-between;font-size:16px}
+.boleto .par span:first-child{color:#5b626c}
+.boleto .cod{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:44px;text-align:center;letter-spacing:.12em;border-top:2px dashed #c8c6bd;border-bottom:2px dashed #c8c6bd;padding:12px 0}
+.boleto .cuenta{text-align:center;font-size:15px;color:#5b626c}
+.boleto .cuenta b{display:block;font-size:30px;color:#15181c;font-family:"Barlow Condensed",sans-serif}
+.boleto button{background:#15181c;color:#fff;border:0;border-radius:10px;padding:13px;font-weight:600;cursor:pointer}
+
+@media(prefers-reduced-motion:reduce){.ruta,.moto{animation:none}.moto{display:none}}
+</style>
 </head>
 <body>
 <main>
-  <header>
-    <h1>Estacionamiento</h1>
-    <div id="conexion"><i></i><span>Conectando…</span></div>
-  </header>
-
-  <!-- Pantalla 1: elegir piso -->
-  <section id="inicio">
-    <p class="sub">Elige un piso para ver los lugares disponibles.</p>
-    <div id="pisos"></div>
+  <section class="portada">
+    <div class="top"><span>Estacionamiento techado</span><div id="conexion"><i></i><span>Conectando…</span></div></div>
+    <h1>Plaza Central</h1>
+    <p class="dir">Av. Principal 120, Centro · Abierto las 24 horas</p>
+    <svg class="skyline" viewBox="0 0 900 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g fill="#1a2733"><rect x="20" y="70" width="70" height="80"/><rect x="100" y="40" width="55" height="110"/><rect x="170" y="85" width="60" height="65"/><rect x="660" y="55" width="70" height="95"/><rect x="745" y="80" width="60" height="70"/><rect x="820" y="45" width="65" height="105"/></g>
+      <g><rect x="270" y="30" width="360" height="120" rx="4" fill="#2b313a"/>
+        <rect x="270" y="30" width="360" height="8" fill="#4cc9f0"/>
+        <g fill="#3a424d"><rect x="270" y="62" width="360" height="5"/><rect x="270" y="92" width="360" height="5"/><rect x="270" y="122" width="360" height="5"/></g>
+        <g fill="#f2d98a" opacity=".85"><rect x="290" y="44" width="14" height="14"/><rect x="330" y="72" width="14" height="14"/><rect x="410" y="44" width="14" height="14"/><rect x="480" y="102" width="14" height="14"/><rect x="560" y="72" width="14" height="14"/><rect x="590" y="44" width="14" height="14"/></g>
+        <rect x="420" y="124" width="60" height="26" fill="#15181c"/></g>
+      <rect y="146" width="900" height="4" fill="#15181c"/>
+    </svg>
   </section>
 
-  <!-- Pantalla 2: plano del piso -->
-  <section id="vistaPiso" class="oculto">
-    <div class="barra">
-      <button class="volver" id="volver">← Pisos</button>
-      <h2 id="tituloPiso"></h2>
+  <div class="cuerpo">
+    <div>
+      <!-- Pantalla 1: edificio -->
+      <section id="inicio">
+        <ul class="datos">
+          <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>24 horas</li>
+          <li><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Vigilancia y cámaras</li>
+          <li><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></svg>Techado</li>
+          <li><svg viewBox="0 0 24 24"><path d="M13 3L6 13h5l-1 8 7-10h-5z"/></svg>Carga para eléctricos</li>
+        </ul>
+        <h2>Elige un piso</h2>
+        <p class="sub">Cada piso muestra cuántos lugares libres tiene en este momento.</p>
+        <div class="edificio" id="pisos"></div>
+        <div class="rampa"><svg viewBox="0 0 24 24"><path d="M3 18h18M6 18l12-9M14 9h4v4"/></svg>Entrada y rampa en planta baja</div>
+      </section>
+
+      <!-- Pantalla 2: plano -->
+      <section id="vistaPiso" class="oculto">
+        <div class="barra"><button class="volver" id="volver">← Pisos</button><h2 id="tituloPiso"></h2></div>
+        <p class="sub" id="subPiso"></p>
+        <div class="escena" id="escena"><svg id="plano" viewBox="0 0 600 400" role="img" aria-label="Plano del piso"></svg></div>
+        <div class="leyenda">
+          <span style="--c:var(--libre)">Libre</span><span style="--c:var(--ocupado)">Ocupado</span>
+          <span style="--c:var(--reservado)">Reservado</span><span style="--c:var(--guia)">Tu ruta</span>
+        </div>
+      </section>
     </div>
-    <svg id="plano" viewBox="0 0 600 400" role="img" aria-label="Plano del piso"></svg>
-    <div class="panel">
-      <div>
-        <p id="textoDestino"></p>
-        <small>Toca otro lugar libre para cambiar el destino.</small>
-      </div>
-      <button class="reservar" id="reservar">Reservar este lugar</button>
-    </div>
-    <div id="aviso" role="status"></div>
-    <div class="leyenda">
-      <span style="--c:var(--libre)">Libre</span>
-      <span style="--c:var(--ocupado)">Ocupado</span>
-      <span style="--c:var(--reservado)">Reservado</span>
-      <span style="--c:var(--guia)">Tu ruta</span>
-    </div>
-  </section>
+
+    <!-- Tarjeta de reserva -->
+    <aside class="reserva" aria-label="Resumen de reserva">
+      <h3>Tu reserva</h3>
+      <div class="fila"><span>Piso</span><b id="rPiso">—</b></div>
+      <div class="fila"><span>Lugar</span><b id="rLugar">—</b></div>
+      <button class="reservar" id="reservar" disabled>Reservar lugar</button>
+      <div id="aviso" role="status"></div>
+      <p class="nota">Tu lugar se guarda 15 minutos. El servicio es gratuito.</p>
+    </aside>
+  </div>
 </main>
 
+<div class="velo oculto" id="velo" role="dialog" aria-modal="true" aria-labelledby="bTitulo">
+  <div class="boleto">
+    <div class="cab"><h3 id="bTitulo">Reserva confirmada</h3><p id="bSub"></p></div>
+    <div class="med">
+      <div class="par"><span>Piso</span><b id="bPiso"></b></div>
+      <div class="par"><span>Lugar</span><b id="bLugar"></b></div>
+      <div class="cod" id="bCod"></div>
+      <div class="cuenta">Tu lugar se libera en<b id="bCuenta">15:00</b></div>
+      <p class="nota" style="color:#5b626c;margin:0">Muestra este código en la entrada y sigue la flecha hasta tu lugar.</p>
+      <button id="bCerrar">Entendido</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  let lugares = [];
-  let pisoActual = null;   // número de piso abierto, o null si estás en el inicio
-  let destinoId = null;    // lugar al que apunta la flecha
+let lugares = [], pisoActual = null, destinoId = null, reloj = null;
 
-  const $ = (id) => document.getElementById(id);
-  const estadoDe = (l) => (l.ocupado ? "ocupado" : l.reservado ? "reservado" : "libre");
+const $ = (id) => document.getElementById(id);
+const estadoDe = (l) => (l.ocupado ? "ocupado" : l.reservado ? "reservado" : "libre");
+const pisos = () => [...new Set(lugares.map((l) => l.nivel))].sort((a, b) => a - b);
+const lugaresDe = (p) => lugares.filter((l) => l.nivel === p).sort((a, b) => a.numero - b.numero);
+const libresDe = (p) => lugaresDe(p).filter((l) => estadoDe(l) === "libre").length;
 
-  function pisosDisponibles() {
-    return [...new Set(lugares.map((l) => l.nivel))].sort((a, b) => a - b);
+/* ---- Edificio ---- */
+function pintarInicio() {
+  const lista = pisos().map((p) => ({ p, libres: libresDe(p), total: lugaresDe(p).length }));
+  const mejor = lista.reduce((a, b) => (b.libres > (a ? a.libres : 0) ? b : a), null);
+  $("pisos").innerHTML = lista.slice().reverse().map(({ p, libres, total }) => {
+    const rec = mejor && mejor.p === p && libres > 0;
+    const info = libres === 0 ? `<span class="llena">Piso lleno</span>` : `<span>${libres} de ${total} libres</span>`;
+    const ins = rec ? `<div class="insignia"><svg viewBox="0 0 24 24"><path d="M12 20V5M5 12l7-7 7 7"/></svg>Más espacio</div>` : "<div></div>";
+    return `<button class="losa ${rec ? "rec" : ""}" data-piso="${p}">
+      <div class="num">${p}</div>
+      <div><strong>Piso ${p}</strong>${info}<div class="puntos">${lugaresDe(p).map((l) => `<b class="${estadoDe(l)}"></b>`).join("")}</div></div>
+      ${ins}</button>`;
+  }).join("");
+  document.querySelectorAll(".losa").forEach((b) => (b.onclick = () => abrirPiso(Number(b.dataset.piso))));
+}
+
+function abrirPiso(p) {
+  pisoActual = p; destinoId = null; $("aviso").textContent = "";
+  $("inicio").classList.add("oculto"); $("vistaPiso").classList.remove("oculto");
+  pintarPiso();
+}
+function volver() {
+  pisoActual = null; destinoId = null;
+  $("vistaPiso").classList.add("oculto"); $("inicio").classList.remove("oculto");
+  pintarInicio(); resumen();
+}
+
+/* ---- Plano ---- */
+const X0 = 40, ANCHO = 520, Y0 = 40, H = 140, CARRIL_Y = Y0 + H, RUTA_Y = 238, ENT = { x: 300, y: 372 };
+const COLORES = ["#b8c0c8", "#2f4b7c", "#8a2f2f", "#e4e4e0", "#26272b", "#4f7a65", "#c9a24a"];
+
+function coche(c, y, cw, cl, col) {
+  const x = c - cw / 2, rue = (yy) => `<rect x="${x - 4}" y="${y + cl * yy}" width="7" height="${cl * .2}" rx="2" fill="#0b0b0c"/><rect x="${x + cw - 3}" y="${y + cl * yy}" width="7" height="${cl * .2}" rx="2" fill="#0b0b0c"/>`;
+  return `<rect x="${x + 4}" y="${y + 6}" width="${cw}" height="${cl}" rx="16" fill="#000" opacity=".4"/>${rue(.14)}${rue(.66)}
+    <rect x="${x}" y="${y}" width="${cw}" height="${cl}" rx="16" fill="${col}"/>
+    <rect x="${x + cw * .1}" y="${y + cl * .24}" width="${cw * .8}" height="${cl * .16}" rx="5" fill="#1b2631"/>
+    <rect x="${x + cw * .14}" y="${y + cl * .42}" width="${cw * .72}" height="${cl * .26}" rx="6" fill="#fff" opacity=".2"/>
+    <rect x="${x + cw * .12}" y="${y + cl * .72}" width="${cw * .76}" height="${cl * .1}" rx="4" fill="#1b2631"/>
+    <rect x="${x + cw * .1}" y="${y + 3}" width="${cw * .22}" height="5" rx="2" fill="#fff7c8"/><rect x="${x + cw * .68}" y="${y + 3}" width="${cw * .22}" height="5" rx="2" fill="#fff7c8"/>
+    <rect x="${x - 6}" y="${y + cl * .3}" width="7" height="5" rx="2" fill="${col}"/><rect x="${x + cw - 1}" y="${y + cl * .3}" width="7" height="5" rx="2" fill="${col}"/>`;
+}
+const cono = (a, b) => `<polygon points="${a},${b - 16} ${a - 9},${b} ${a + 9},${b}" fill="#ee7a1e"/><rect x="${a - 5}" y="${b - 8}" width="10" height="3" fill="#fff"/>`;
+
+function pintarPiso() {
+  const ls = lugaresDe(pisoActual), n = Math.max(ls.length, 1);
+  const W = Math.min(130, ANCHO / n), ini = X0 + (ANCHO - W * n) / 2;
+  const cx = (i) => ini + W / 2 + i * W;
+  $("tituloPiso").textContent = `Piso ${pisoActual}`;
+  $("subPiso").textContent = `${libresDe(pisoActual)} lugares libres. Toca uno para elegirlo.`;
+
+  const actual = ls.find((l) => l.id === destinoId && estadoDe(l) === "libre");
+  const destino = actual || ls.find((l) => estadoDe(l) === "libre") || null;
+  destinoId = destino ? destino.id : null;
+
+  let s = `<defs>
+    <filter id="ruido" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .6 0 0 0 0 .6 0 0 0 0 .6 0 0 0 .22 0"/></filter>
+    <radialGradient id="luz"><stop offset="0" stop-color="#fff6d0" stop-opacity=".2"/><stop offset="1" stop-color="#fff6d0" stop-opacity="0"/></radialGradient>
+    <pattern id="raya" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="14" fill="#e8c23a"/><rect x="7" width="7" height="14" fill="#1b1d20"/></pattern></defs>
+    <rect x="14" y="6" width="572" height="388" rx="14" fill="#2a2e34"/><rect x="14" y="6" width="572" height="388" rx="14" filter="url(#ruido)"/>
+    <rect x="14" y="6" width="572" height="26" rx="8" fill="#3b4048"/>`;
+  for (let x = 90; x < 580; x += 130) s += `<rect x="${x}" y="14" width="46" height="6" rx="3" fill="#fff3c4"/><ellipse cx="${x + 23}" cy="215" rx="95" ry="62" fill="url(#luz)"/>`;
+
+  s += `<path d="M30 272H570" stroke="#e0b830" stroke-width="3" stroke-dasharray="18 14" opacity=".7"/>`;
+  for (let x = 70; x < 540; x += 90) s += `<path d="M${x} 198l12 8-12 8" fill="none" stroke="#e8e6df" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".3"/>`;
+  for (let i = 0; i <= n; i++) s += `<path d="M${ini + i * W} ${Y0}V${Y0 + H}" stroke="#e8e6df" stroke-width="4" opacity=".85"/>`;
+  s += `<path d="M${ini} ${Y0}H${ini + n * W}" stroke="#e8e6df" stroke-width="4" opacity=".85"/>`;
+
+  ls.forEach((l, i) => {
+    const x = ini + i * W, est = estadoDe(l), c = x + W / 2, cw = Math.min(W * .56, 74), cl = H * .78;
+    const t = est === "libre" ? "Libre" : est === "ocupado" ? "Ocupado" : "Reservado";
+    s += `<g class="lugar ${est} ${l.id === destinoId ? "destino" : ""}" data-id="${l.id}" tabindex="${est === "libre" ? 0 : -1}" role="button" aria-label="Lugar ${l.numero}, ${t}">
+      <rect class="base" x="${x}" y="${Y0}" width="${W}" height="${H}"/>
+      <rect x="${c - W * .2}" y="${Y0 + 3}" width="${W * .4}" height="7" rx="2" fill="#6d747d"/>
+      ${est === "ocupado" ? coche(c, Y0 + 14, cw, cl, COLORES[(Number(l.id) || l.numero) % COLORES.length]) : ""}
+      ${est === "reservado" ? `${cono(x + 16, Y0 + H - 12)}${cono(x + W - 16, Y0 + H - 12)}<rect x="${c - 36}" y="${Y0 + 44}" width="72" height="44" rx="6" fill="#e0a030"/><text class="rot" x="${c}" y="${Y0 + 71}" style="fill:#2a1d05;font-size:15px;font-weight:600">Reservado</text>` : ""}
+      ${est === "libre" ? `<text class="suelo" x="${c}" y="${Y0 + H / 2 + 16}" font-size="58">${l.numero}</text><text class="est" x="${c}" y="${Y0 + H / 2 + 42}">Libre</text>` : `<text class="suelo chico" x="${c}" y="${Y0 + H - 10}" font-size="22">${l.numero}</text>`}
+    </g>`;
+  });
+  for (let i = 0; i <= n; i += 2) s += `<rect x="${ini + i * W - 7}" y="${Y0 + H - 8}" width="14" height="14" fill="#7b828b" stroke="#565c64" stroke-width="2"/>`;
+
+  // Zona de entrada
+  s += `<rect x="34" y="316" width="70" height="62" rx="4" fill="#4a525c"/><rect x="42" y="324" width="24" height="46" fill="#9aa1ab"/><rect x="72" y="324" width="24" height="46" fill="#9aa1ab"/><text class="rot" x="69" y="392">Elevador</text>`;
+  s += `<rect x="116" y="316" width="64" height="62" rx="4" fill="#3b4048"/>${[0, 1, 2, 3, 4].map((k) => `<path d="M120 ${324 + k * 11}H176" stroke="#8a929c" stroke-width="3"/>`).join("")}<text class="rot" x="148" y="392">Escaleras</text>`;
+  s += `<rect x="396" y="316" width="70" height="62" rx="4" fill="#4a525c"/><rect x="404" y="324" width="54" height="22" fill="#9ed3e6" opacity=".7"/><text class="rot" x="431" y="392">Caseta</text>`;
+  s += `<rect x="266" y="330" width="9" height="40" fill="url(#raya)"/><rect x="325" y="330" width="9" height="40" fill="url(#raya)"/><text class="suelo" x="300" y="388" style="font-size:17px;opacity:.5;letter-spacing:.2em">ENTRADA</text>`;
+
+  if (destino) {
+    const i = ls.findIndex((l) => l.id === destino.id), x = cx(i), top = Y0 + H - 14;
+    const d = x === ENT.x ? `M${ENT.x},${ENT.y - 24} L${x},${top}` : `M${ENT.x},${ENT.y - 24} L${ENT.x},${RUTA_Y} L${x},${RUTA_Y} L${x},${top}`;
+    s += `<path d="${d}" fill="none" stroke="#4cc9f0" stroke-width="18" opacity=".18" stroke-linecap="round" stroke-linejoin="round"/><path id="ruta" class="ruta" d="${d}"/>`;
+    s += `<g class="moto"><polygon points="-14,-13 16,0 -14,13 -6,0" fill="var(--guia)"><animateMotion dur="3s" repeatCount="indefinite" rotate="auto"><mpath href="#ruta"/></animateMotion></polygon></g>`;
   }
-  function lugaresDe(piso) {
-    return lugares.filter((l) => l.nivel === piso).sort((a, b) => a.numero - b.numero);
-  }
+  $("plano").innerHTML = s;
+  $("plano").querySelectorAll(".lugar.libre").forEach((g) => {
+    const elegir = () => { destinoId = Number(g.dataset.id); pintarPiso(); };
+    g.onclick = elegir;
+    g.onkeydown = (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), elegir());
+  });
+  resumen();
+}
 
-  /* ---------- Pantalla 1 ---------- */
-  function pintarInicio() {
-    const pisos = pisosDisponibles();
-    const datos = pisos.map((p) => ({ piso: p, libres: lugaresDe(p).filter((l) => estadoDe(l) === "libre").length }));
-    const mejor = datos.reduce((a, b) => (b.libres > (a?.libres ?? 0) ? b : a), null);
+/* ---- Resumen de reserva ---- */
+function resumen() {
+  const l = lugares.find((x) => x.id === destinoId);
+  const ok = pisoActual !== null && !!l;
+  $("rPiso").textContent = pisoActual !== null ? pisoActual : "—";
+  $("rLugar").textContent = ok ? l.numero : "—";
+  $("reservar").disabled = !ok;
+  $("reservar").textContent = ok ? `Reservar lugar ${l.numero}` : pisoActual !== null ? "Piso lleno" : "Elige un piso";
+}
 
-    $("pisos").innerHTML = datos.map(({ piso, libres }) => {
-      const ls = lugaresDe(piso);
-      const recomendado = mejor && mejor.piso === piso && libres > 0;
-      const info = libres === 0
-        ? `<span class="llena">Piso lleno</span>`
-        : `<span>${libres} de ${ls.length} libres</span>`;
-      const flecha = recomendado
-        ? `<div class="flecha-piso" aria-hidden="true">
-             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 12l7-7 7 7"/></svg>
-             Más espacio
-           </div>` : "<div></div>";
-      return `
-        <button class="piso ${recomendado ? "recomendado" : ""}" data-piso="${piso}">
-          <div class="piso-num">${piso}</div>
-          <div class="piso-info">
-            <strong>Piso ${piso}</strong>${info}
-            <div class="puntos">${ls.map((l) => `<b class="${estadoDe(l)}"></b>`).join("")}</div>
-          </div>
-          ${flecha}
-        </button>`;
-    }).join("");
-
-    document.querySelectorAll(".piso").forEach((b) => (b.onclick = () => abrirPiso(Number(b.dataset.piso))));
-  }
-
-  /* ---------- Pantalla 2 ---------- */
-  function abrirPiso(piso) {
-    pisoActual = piso;
-    destinoId = null;
-    $("aviso").textContent = "";
-    $("inicio").classList.add("oculto");
-    $("vistaPiso").classList.remove("oculto");
-    pintarPiso();
-  }
-  function volver() {
-    pisoActual = null;
-    $("vistaPiso").classList.add("oculto");
-    $("inicio").classList.remove("oculto");
-    pintarInicio();
-  }
-
-  // Geometría del plano
-  const W = 150, H = 150, GAP = 15, X0 = 60, Y0 = 30;
-  const centroX = (i) => X0 + W / 2 + i * (W + GAP);
-  const CARRIL_Y = Y0 + H + 30;      // 210
-  const RUTA_Y = CARRIL_Y + 50;      // 260
-  const ENTRADA = { x: 300, y: 380 };
-
-  function pintarPiso() {
-    const ls = lugaresDe(pisoActual);
-    $("tituloPiso").textContent = `Piso ${pisoActual}`;
-
-    // Elegir destino: el que escogió el usuario si sigue libre, si no, el primer libre
-    const actual = ls.find((l) => l.id === destinoId && estadoDe(l) === "libre");
-    const destino = actual || ls.find((l) => estadoDe(l) === "libre") || null;
-    destinoId = destino ? destino.id : null;
-
-    let svg = `<rect x="20" y="10" width="560" height="${ENTRADA.y + 10}" rx="16" fill="none" stroke="#2b3138" stroke-width="2"/>`;
-    svg += `<rect x="40" y="${CARRIL_Y}" width="520" height="${ENTRADA.y - CARRIL_Y}" fill="var(--carril)" rx="10"/>`;
-    svg += `<text class="carril-txt" x="300" y="${CARRIL_Y + 30}" opacity=".9">CARRIL</text>`;
-
-    ls.forEach((l, i) => {
-      const x = X0 + i * (W + GAP);
-      const est = estadoDe(l);
-      const texto = est === "libre" ? "Libre" : est === "ocupado" ? "Ocupado" : "Reservado";
-      svg += `
-        <g class="lugar ${est} ${l.id === destinoId ? "destino" : ""}" data-id="${l.id}" tabindex="${est === "libre" ? 0 : -1}" role="button" aria-label="Lugar ${l.numero}, ${texto}">
-          <rect class="base" x="${x}" y="${Y0}" width="${W}" height="${H}" rx="10"/>
-          <text x="${x + W / 2}" y="${Y0 + 55}" font-size="44">${l.numero}</text>
-          <text class="estado" x="${x + W / 2}" y="${Y0 + 84}">${texto}</text>
-          ${est === "ocupado" ? `<text x="${x + W / 2}" y="${Y0 + 130}" font-size="34">🚗</text>` : ""}
-        </g>`;
+async function reservar() {
+  const l = lugares.find((x) => x.id === destinoId);
+  if (!l) return;
+  $("reservar").disabled = true; $("aviso").textContent = "";
+  try {
+    const res = await fetch("/reservaciones", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lugarId: l.id, clienteId: "cliente-demo" }),
     });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) mostrarBoleto(l, data); else $("aviso").textContent = data.error || "No se pudo reservar. Elige otro lugar.";
+  } catch { $("aviso").textContent = "No hay conexión con el servidor. Inténtalo de nuevo."; }
+  resumen();
+}
 
-    // Entrada
-    svg += `<text class="carril-txt" x="${ENTRADA.x}" y="${ENTRADA.y + 2}" style="fill:#6b7480;font-size:18px">ENTRADA</text>`;
+/* ---- Boleto ---- */
+function mostrarBoleto(l, data) {
+  const cod = data.codigo || `P${l.nivel}-${l.numero}-${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
+  $("bSub").textContent = "Plaza Central";
+  $("bPiso").textContent = l.nivel; $("bLugar").textContent = l.numero;
+  $("bCod").textContent = cod;
+  $("velo").classList.remove("oculto"); $("bCerrar").focus();
+  let resta = 15 * 60;
+  const pinta = () => { $("bCuenta").textContent = `${String(Math.floor(resta / 60)).padStart(2, "0")}:${String(resta % 60).padStart(2, "0")}`; };
+  pinta(); clearInterval(reloj);
+  reloj = setInterval(() => { resta = Math.max(0, resta - 1); pinta(); if (!resta) clearInterval(reloj); }, 1000);
+}
+$("bCerrar").onclick = () => { $("velo").classList.add("oculto"); clearInterval(reloj); };
 
-    // Flecha guía
-    if (destino) {
-      const i = ls.findIndex((l) => l.id === destino.id);
-      const cx = centroX(i);
-      const d = cx === ENTRADA.x
-        ? `M${ENTRADA.x},${ENTRADA.y - 22} L${cx},${Y0 + H - 25}`
-        : `M${ENTRADA.x},${ENTRADA.y - 22} L${ENTRADA.x},${RUTA_Y} L${cx},${RUTA_Y} L${cx},${Y0 + H - 25}`;
-      svg += `<path id="ruta" class="ruta" d="${d}"/>`;
-      svg += `<g class="moto"><polygon points="-14,-13 16,0 -14,13 -6,0" fill="var(--guia)">
-                <animateMotion dur="3s" repeatCount="indefinite" rotate="auto"><mpath href="#ruta"/></animateMotion>
-              </polygon></g>`;
-    }
+/* ---- Tiempo real ---- */
+function render() { if (pisoActual === null) { pintarInicio(); resumen(); } else pintarPiso(); }
+function conectar() {
+  const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`);
+  ws.onopen = () => { $("conexion").classList.add("on"); $("conexion").lastChild.textContent = "Disponibilidad en vivo"; };
+  ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.tipo === "lugares") { lugares = m.lugares; render(); } };
+  ws.onclose = () => { $("conexion").classList.remove("on"); $("conexion").lastChild.textContent = "Reconectando…"; setTimeout(conectar, 2000); };
+}
 
-    $("plano").innerHTML = svg;
-    $("plano").querySelectorAll(".lugar.libre").forEach((g) => {
-      const elegir = () => { destinoId = Number(g.dataset.id); pintarPiso(); };
-      g.onclick = elegir;
-      g.onkeydown = (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), elegir());
-    });
-
-    if (destino) {
-      $("textoDestino").textContent = `Sigue la flecha al lugar ${destino.numero}`;
-      $("reservar").disabled = false;
-      $("reservar").style.display = "";
-    } else {
-      $("textoDestino").textContent = "Este piso está lleno. Prueba en otro piso.";
-      $("reservar").style.display = "none";
-    }
-  }
-
-  async function reservar() {
-    if (!destinoId) return;
-    $("reservar").disabled = true;
-    try {
-      const res = await fetch("/reservaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lugarId: destinoId, clienteId: "cliente-demo" }),
-      });
-      const data = await res.json();
-      $("aviso").textContent = res.ok
-        ? "Lugar reservado por 15 minutos."
-        : data.error || "No se pudo reservar.";
-    } catch {
-      $("aviso").textContent = "No hay conexión con el servidor.";
-    }
-    $("reservar").disabled = false;
-  }
-
-  /* ---------- Render general + WebSocket ---------- */
-  function render() {
-    if (pisoActual === null) pintarInicio(); else pintarPiso();
-  }
-
-  function conectar() {
-    const ws = new WebSocket(`ws://${location.host}`);
-    ws.onopen = () => { $("conexion").classList.add("on"); $("conexion").lastChild.textContent = "En vivo"; };
-    ws.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
-      if (msg.tipo === "lugares") { lugares = msg.lugares; render(); }
-    };
-    ws.onclose = () => {
-      $("conexion").classList.remove("on");
-      $("conexion").lastChild.textContent = "Reconectando…";
-      setTimeout(conectar, 2000);
-    };
-  }
-
-  $("volver").onclick = volver;
-  $("reservar").onclick = reservar;
-  conectar();
+$("volver").onclick = volver;
+$("reservar").onclick = reservar;
+resumen(); conectar();
 </script>
 </body>
 </html>
